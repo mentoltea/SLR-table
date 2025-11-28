@@ -10,7 +10,7 @@ struct LR_Rule: public Rule {
     LR_Rule& operator=(const Rule& rule);
     bool operator==(const LR_Rule& other) const;
 
-    void print() const;
+    void print(std::ostream &os) const;
 };
 
 class LR_Collection;
@@ -25,7 +25,7 @@ struct LR_State {
 
     LR_State(const std::vector< LR_Rule >& rls);
 
-    void print(const LR_Collection& C) const;
+    void print(const LR_Collection& C, std::ostream &os) const;
 
     bool operator==(const LR_State& other) const;
 };

@@ -20,28 +20,36 @@ Element::operator std::string() const {
     assert(0 && "Unreachable");
 }
 
-void Grammar::describe() const {
-    std::cout << "Terminals:" << std::endl;
+void Grammar::describe(std::ostream &os) const {
+    os << "#TERMS" << std::endl;
     for (auto& t: terms) {
-        std::cout << "`" << t << "` ";
+        os <<  t << " ";
     }
-    std::cout << std::endl;
+    os << std::endl;
     
-    std::cout << "Non-Terminals:" << std::endl;
+    os << "#NONTERMS" << std::endl;
     for (auto& nt: nonterm) {
-        std::cout << "`" << nt << "` ";
+        os << nt << " ";
     }
-    std::cout << std::endl;
+    os << std::endl;
     
-    std::cout << "Rules:" << std::endl;
+    os << "# Rules" << std::endl;
     int i = 0;
     for (auto& rule: rules) {
-        std::cout << i << ". " << rule.lhs << " -> ";
-        if (rule.rhs.empty()) std::cout << "^";
+        os << "# " << i << ". " << rule.lhs << " -> ";
+        if (rule.rhs.empty()) os << "^";
         for (auto &el: rule.rhs) {
-            std::cout << (std::string) el << " ";
+            os << (std::string) el << " ";
         }
-        std::cout << std::endl;
+        os << std::endl;
+
+        // if (i == 0) continue;
+        os << rule.lhs << " ";
+        for (auto &el: rule.rhs) {
+            os << (std::string) el << " ";
+        }
+        os << std::endl;
+
         i++;
     }
 }

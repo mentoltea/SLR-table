@@ -1,4 +1,4 @@
-CXXFLAGS = -Wall -Wextra -ggdb
+CXXFLAGS = -Wall -Wextra -ggdb --std=c++23
 
 CXX = g++
 

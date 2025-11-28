@@ -22,34 +22,34 @@ bool LR_Rule::operator==(const LR_Rule& other) const {
     return true;
 }
 
-void LR_Rule::print() const {
-    std::cout << lhs << " -> ";
+void LR_Rule::print(std::ostream &os) const {
+    os << lhs << " -> ";
     for (int i=0; i<(int)rhs.size(); i++) {
-        if (dot_place == i) std::cout << "* ";
-        std::cout << (std::string) rhs[i] << " ";
+        if (dot_place == i) os << "* ";
+        os << (std::string) rhs[i] << " ";
     }
-    if (dot_place == (int)rhs.size()) std::cout << "*";
-    if (!was_analyzed) std::cout << " [NOT ANALYZED]";
-    std::cout << std::endl;
+    if (dot_place == (int)rhs.size()) os << "*";
+    if (!was_analyzed) os << " [NOT ANALYZED]";
+    os << std::endl;
 }
 
 LR_State::LR_State(const std::vector< LR_Rule >& rls): rules(rls) {
     index = 0;
 }
 
-void LR_State::print(const LR_Collection& C) const {
-    std::cout << "I_" << index;
+void LR_State::print(const LR_Collection& C, std::ostream &os) const {
+    os << "I_" << index;
     if (index != 0) {
         for (int ref_idx: refs) {
             auto &ref = C.states[ref_idx];
-            std::cout << " = goto( I_" << ref.index << ", " 
+            os << " = goto( I_" << ref.index << ", " 
                 << (std::string)ref_element << " )";
         }
     }
-    std::cout << std::endl;
+    os << std::endl;
     for (auto &rule: rules) {
-        std::cout << '\t';
-        rule.print();
+        os << '\t';
+        rule.print(os);
     }
 }
 
@@ -94,16 +94,14 @@ LR_Collection LR_Collection::from_grammar(const Grammar& G) {
     {
         std::vector<LR_Rule> cls;
         closure(G, base_rule, cls);
-        // std::cout << cls.size() << std::endl;
+
         base_state.rules.insert(base_state.rules.end(), cls.begin(), cls.end());
     }
     base_state.ref_element.type = Element::NONTERM;
     base_state.ref_element.nt = "S";
     base_state.index = 0;
     C.states.push_back(base_state);
-    // std::cout << "---" <<std::endl;
-    // base_state.print();
-    // std::cout << "---" <<std::endl;
+
 
     bool finished = false;
     bool new_state_added = false;
@@ -113,9 +111,7 @@ LR_Collection LR_Collection::from_grammar(const Grammar& G) {
         int C_states_size = C.states.size();
         for (int i_state=0; i_state<C_states_size; i_state++) {
             LR_State &state = C.states[i_state];
-            // std::cout << "---" <<std::endl;
-            // state.print(C);
-            // std::cout << "---" <<std::endl;
+
             for (int i_rule=0; i_rule < (int)state.rules.size(); i_rule++) {
                 LR_Rule &rule = state.rules[i_rule];
                 // rule.print();
@@ -132,10 +128,10 @@ LR_Collection LR_Collection::from_grammar(const Grammar& G) {
                 new_rules.push_back(new_rule);
 
                 if (new_rule.dot_place != (int)new_rule.rhs.size()) {
-                    // std::cout << "BEFORE CLOSURE" << std::endl;
+
                     std::vector<LR_Rule> cls;
                     closure(G, new_rule, cls);
-                    // std::cout << "AFTER CLOSURE" << std::endl;
+
                     new_rules.insert(new_rules.end(), cls.begin(), cls.end());                    
                 }
 
@@ -170,8 +166,7 @@ LR_Collection LR_Collection::from_grammar(const Grammar& G) {
                     }
                     same_ref->rules.insert(same_ref->rules.end(), to_add.begin(), to_add.end());
                     new_state_added = true;
-                    // std::cout << "Combined with " << same_ref->index << std::endl;
-                    // same_ref->print(C);
+
                     break;
                 }
 
@@ -191,14 +186,12 @@ LR_Collection LR_Collection::from_grammar(const Grammar& G) {
 }
 
 void closure(const Grammar& G, const LR_Rule& rule, std::vector<LR_Rule> &result) {
-    // std::cout << "[CLOSURE] ";
-    // rule.print();
+
 
     if (rule.dot_place >= (int)rule.rhs.size()) return;
     const Element &after_dot = rule.rhs[rule.dot_place];
     if (after_dot.type != Element::NONTERM) return;
-    // std::cout << (std::string)after_dot << std::endl;
-    
+  
     for (const auto &g_rule: G.rules) {
         if (g_rule.lhs == after_dot.nt.value()) {
             LR_Rule new_rule(g_rule);

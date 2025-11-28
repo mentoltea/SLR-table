@@ -44,7 +44,7 @@ class Grammar {
 
     static Grammar load(std::istream& fd);
 
-    void describe() const;
+    void describe(std::ostream &os) const;
     
     typedef std::map< NonTerminal, std::set<Terminal> > FollowTable;
     FollowTable followtable() const;
