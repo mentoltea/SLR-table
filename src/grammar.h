@@ -3,6 +3,7 @@
 
 #include <set>
 #include <vector>
+#include <map>
 #include <optional>
 #include <string>
 #include <fstream>
@@ -44,6 +45,14 @@ class Grammar {
     static Grammar load(std::istream& fd);
 
     void describe() const;
+    
+    typedef std::map< NonTerminal, std::set<Terminal> > FollowTable;
+    FollowTable followtable() const;
+
+    std::set<Terminal> follow(const NonTerminal& nt) const;
+    std::set<Terminal> first(const NonTerminal& nt) const;
 };
+
+
 
 #endif

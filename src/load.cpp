@@ -4,8 +4,12 @@
 
 Grammar Grammar::load(std::istream& fd) {
     Grammar G;
-    auto tokens = parse(fd);
+
+    // G.terms.insert("$");
+    // G.nonterm.insert("S");
     
+    auto tokens = parse(fd);
+
     int terminals_line = -1;
     int nonterminals_line = -1;
     int ignore_line = -1;
@@ -27,14 +31,22 @@ Grammar Grammar::load(std::istream& fd) {
         }
         if (t.line == ignore_line) continue;
 
+        if (t.str == "$") {
+            std::cerr << "Token `$` is reserved and cannot be used" << std::endl;
+            std::cerr << t.line << ':' << t.pos << ": " << t.str << std::endl;
+            throw std::runtime_error("Reserved token");
+        }
+
         if (t.line == terminals_line) {
             if (t.str == "S") {
                 std::cerr << "Token `S` is reserved and cannot be used" << std::endl;
                 std::cerr << t.line << ':' << t.pos << ": " << t.str << std::endl;
                 throw std::runtime_error("Reserved token");
             }
+            
             G.terms.insert(t.str);
         }
+
         else if (t.line == nonterminals_line) {
             if (t.str == "S") {
                 std::cerr << "Token `S` is reserved and cannot be used" << std::endl;

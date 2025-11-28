@@ -7,7 +7,7 @@ A B C
 # Rules
 S A B C
 
-A a
+A
 A A a
 B b
 B B b

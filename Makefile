@@ -9,6 +9,7 @@ TARGET = $(BIN_BOLDER)/slr
 
 SRC_EXT := cpp
 SOURCES := $(wildcard $(SRC_FOLDER)/*.$(SRC_EXT))
+HEADERS := $(wildcard $(SRC_FOLDER)/*.h)
 OBJECTS := $(patsubst $(SRC_FOLDER)/%,$(BUILD_FOLDER)/%,$(SOURCES:.$(SRC_EXT)=.o))
 
 $(TARGET) : $(OBJECTS)
@@ -16,12 +17,12 @@ $(TARGET) : $(OBJECTS)
 	@echo " Linking..."; $(CXX) $(CXXFLAGS) $^ -o $(TARGET)
 	@echo " Done!"
 
-$(BUILD_FOLDER)/%.o : $(SRC_FOLDER)/%.$(SRC_EXT)
+$(BUILD_FOLDER)/%.o : $(SRC_FOLDER)/%.$(SRC_EXT) $(HEADERS)
 	@mkdir -p $(BUILD_FOLDER)
 	@echo " Generating: $@"; $(CXX) $(CXXFLAGS) $(INC) -c -o $@ $<
 
 clean:
-	@echo " Cleaning..."; rm -r $(BUILDDIR) $(TARGET)
+	@echo " Cleaning..."; rm -r $(BUILD_FOLDER) $(BIN_BOLDER)
 	@echo " Done!"
 
 info:
