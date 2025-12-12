@@ -51,6 +51,7 @@ void LR_State::print(const LR_Collection& C, std::ostream &os) const {
         os << '\t';
         rule.print(os);
     }
+    os << std::endl;
 }
 
 bool LR_State::operator==(const LR_State& other) const {

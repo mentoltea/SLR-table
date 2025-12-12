@@ -15,19 +15,32 @@ void Action::print(std::ostream &os) const {
     }
 }
 
+bool Action::operator==(const Action& other) const {
+    if (type != other.type) return false;
+    if (type == Action::Type::SHIFT) return data.s == other.data.s;
+    if (type == Action::Type::REDUCE) return data.r == other.data.r;
+    return true;
+}
+
+bool Action::operator!=(const Action& other) const {
+    return !(*this == other);
+}
+
 void SLR_State::add_action(const Terminal& t, const Action& a) {
     if (Actions.contains(t)) {
         auto &conflict_action = Actions.at(t); 
-        std::cerr << "SLR conflict" << std::endl;
-        std::cerr << "State " << index << std::endl;
-        std::cerr << "Actions:" << std::endl;
-        std::cerr << "\t" << t << " : "; 
-            conflict_action.print(std::cerr);
-        std::cerr << std::endl;
-        std::cerr << "\t" << t << " : "; 
-            a.print(std::cerr);
-        std::cerr << std::endl;
-        throw std::runtime_error("Action conflict");
+        if (conflict_action != a) {
+            std::cerr << "SLR conflict" << std::endl;
+            std::cerr << "State " << index << std::endl;
+            std::cerr << "Actions:" << std::endl;
+            std::cerr << "\t" << t << " : "; 
+                conflict_action.print(std::cerr);
+            std::cerr << std::endl;
+            std::cerr << "\t" << t << " : "; 
+                a.print(std::cerr);
+            std::cerr << std::endl;
+            throw std::runtime_error("Action conflict");
+        }
     }
     Actions.insert( {t, a} );
 }

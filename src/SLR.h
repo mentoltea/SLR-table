@@ -18,6 +18,9 @@ struct Action {
     } data;
 
     void print(std::ostream &os) const;
+
+    bool operator==(const Action& other) const;
+    bool operator!=(const Action& other) const;
 };
 
 struct SLR_State {

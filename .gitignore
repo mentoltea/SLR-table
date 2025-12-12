@@ -3,3 +3,6 @@ build/
 generated/
 .vscode/
 error
+grammar.txt
+grammar2.md
+grammar2.txt
